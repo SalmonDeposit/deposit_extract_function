@@ -10,28 +10,21 @@ namespace deposit_extract
     public class DepositExtract
     {
         [FunctionName("DepositExtract")]
-        public async Task RunAsync([TimerTrigger("0 2 * * *")]TimerInfo myTimer, ILogger log)
+        public void Run ([TimerTrigger("0 * * * * *")] TimerInfo myTimer, ILogger log)
         {
-            string apiKey = Environment.GetEnvironmentVariable("API_KEY");
-            string apiUrl = Environment.GetEnvironmentVariable("API_URL");
-            await GetResponseFromApi(apiUrl, apiKey);
+            //string apiKey = Environment.GetEnvironmentVariable("API_KEY");
+            //string apiUrl = Environment.GetEnvironmentVariable("API_URL");
+
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
-        }
-        public static async Task<string> GetResponseFromApi(string url, string apiKey)
-        {
+
             using (HttpClient client = new HttpClient())
             {
                 // Ajouter l'en-tête API-KEY à la demande
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("API-KEY", apiKey);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("API-KEY", "0d8eedb6-b1a1-467f-bf4a-7057174f1cd9");
 
                 // Faire la requête HTTP GET et récupérer la réponse
-                HttpResponseMessage response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                return responseBody;
+                client.GetAsync("https://api.test.deposit.ovh/v1/jobs?job=extract:users");
             }
         }
-
     }
 }
